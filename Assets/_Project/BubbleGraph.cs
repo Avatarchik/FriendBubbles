@@ -15,6 +15,7 @@ public class BubbleGraph : MonoBehaviour
 	private FBUser me;
 
 	public int maxFriends = 5;
+	private float friendsDistance = 1f;
 
 	public void Init(JObject p_userDataJToken)
 	{
@@ -70,8 +71,18 @@ public class BubbleGraph : MonoBehaviour
 					GameObject newFBUserGameObject = new GameObject();
 					newFBUserGameObject.transform.parent = this.transform;
 
+					float eulerAngle = ((float)count / (float)this.maxFriends) * 360f;
+					Debug.Log(eulerAngle);
+					newFBUserGameObject.transform.localPosition = 
+						new Vector3(
+							this.friendsDistance * Mathf.Cos (eulerAngle),
+							this.friendsDistance * Mathf.Sin (eulerAngle),
+							0f);
+
 					FBUser newFBUser = newFBUserGameObject.AddComponent<FBUser>();
 					newFBUser.Init((JObject)userJToken);
+
+					count++;
 				}
 			}
 		}
