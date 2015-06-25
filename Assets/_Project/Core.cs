@@ -7,6 +7,7 @@ public class Core : MonoBehaviour
 {
 	public GameObject goodFacebookLogo;
 	public GameObject badFacebookLogo;
+	public GameObject fbLoginButton;
 
 	private string fbToken;
 
@@ -14,21 +15,25 @@ public class Core : MonoBehaviour
 	{
 		this.goodFacebookLogo.SetActive(false);
 		this.badFacebookLogo.SetActive(false);
+		this.fbLoginButton.gameObject.SetActive(false);
 	}
 
-	private void Start()
+	public void Start()
 	{
 		FB.Init(this.OnFBInit);
 	}
 
-	// Called when Facebook API initialized
 	private void OnFBInit()
+	{
+		this.fbLoginButton.SetActive(true);
+	}
+
+	// Called when Facebook API initialized
+	public void FBLogin()
 	{
 		// Double check login status
 		if(!FB.IsLoggedIn)
-		{
 			FB.Login("", this.OnFBLoggedIn);
-		}
 	}
 
 	// Called when logged in to Facebook
