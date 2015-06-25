@@ -12,6 +12,9 @@ public class BubbleGraphEditor : Editor
 		// Draw the default inspector stuff first
 		DrawDefaultInspector();
 	
+		if(GUILayout.Button("Refresh"))
+			bubbleGraph.Refresh();
+
 		if(GUILayout.Button("Self Destruct"))
 			bubbleGraph.SelfDestruct();
 	}

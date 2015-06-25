@@ -65,7 +65,7 @@ public class Core : MonoBehaviour
 					1f)
 					.setEase(LeanTweenType.easeInOutSine);
 
-				BubbleGraph.Create((JObject)resultJToken);
+				BubbleGraph.Create((string)resultJToken["user_id"]);
 			}
 			else
 			{

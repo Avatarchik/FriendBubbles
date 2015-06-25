@@ -13,7 +13,7 @@ using System.Runtime.Serialization;
 [DataContract]
 public class FBUser : MonoBehaviour 
 {
-	public enum Type {DRAGGER, CLICKER};
+	public enum Type {SELF, FRIEND};
 
 
 	// ----------
@@ -44,7 +44,8 @@ public class FBUser : MonoBehaviour
 	}
 
 	[JsonProperty]
-	private string id;
+	public string id;
+
 	[JsonProperty]
 	private new string name
 	{
@@ -56,76 +57,38 @@ public class FBUser : MonoBehaviour
 
 	private JObject jObjectData;
 
-	public Type type;
+	private Type _type;
+	public Type type
+	{
+		set
+		{
+			this._type = value;
 
-	private bool dragging = false;
+			CircleCollider2D collider2D = this.GetComponent<CircleCollider2D>();
+			if(this._type == Type.FRIEND)
+			{
+				if(collider2D == null)
+					collider2D = this.gameObject.AddComponent<CircleCollider2D>();
+				collider2D.radius = 0.5f;
+			}
+			else
+			{
+				if(collider2D != null)
+					GameObject.Destroy(collider2D);
+			}
+		}
+		get
+		{
+			return this._type;
+		}
+	}
+	
 	private bool clicked = false;
 	// ----------
-
-
-	private void Awake()
-	{
-		CircleCollider2D collider2D = this.GetComponent<CircleCollider2D>();
-		if(collider2D == null)
-			collider2D = this.gameObject.AddComponent<CircleCollider2D>();
-		collider2D.radius = 0.5f;
-
-		EasyTouch.On_TouchStart += delegate(Gesture gesture) {
-			if(gesture.pickedObject == this.gameObject)
-			{
-				if(this.type == Type.DRAGGER)
-				{
-					dragging = true;
-				}
-				else
-				{
-
-				}
-			}
-		};
-
-		EasyTouch.On_TouchDown += delegate(Gesture gesture) {
-			if(gesture.pickedObject == this.gameObject)
-			{
-				if(this.type == Type.DRAGGER && this.dragging)
-				{
-					Vector3 newPosition = Camera.main.ScreenToWorldPoint(gesture.position);
-					newPosition.z = 0f;
-					this.transform.parent.position = newPosition;
-				}
-				else
-				{
-					
-				}
-			}
-		};
-
-		EasyTouch.On_TouchUp += delegate(Gesture gesture) {
-			if(gesture.pickedObject == this.gameObject)
-			{
-				if(this.type == Type.DRAGGER)
-				{
-					this.dragging = false;
-				}
-				else if(!this.clicked)
-				{
-					this.clicked = true;
-					BubbleGraph.Create(this.jObjectData);
-				}
-			}
-		};
-	}
-
-	private void Update()
-	{
-
-	}
-
+	
 	private void LateUpdate()
 	{
 		this.transform.eulerAngles = Vector3.zero;
-		if(this.type == Type.DRAGGER)
-			this.transform.localPosition = Vector3.zero;
 	}
 
 	// Initializes this object with a user's data
@@ -139,9 +102,6 @@ public class FBUser : MonoBehaviour
 		this.type = p_type;
 
 		this.Clear();
-
-//		Debug.Log("Initializing " + p_jObject["name"]);
-//		Debug.Log(p_jObject.ToString());
 
 		JsonTools.PopulateJObjectToExistingObject(p_jObject, this);
 		this.StartCoroutine(this.ReloadImage());
@@ -178,7 +138,7 @@ public class FBUser : MonoBehaviour
 		this.transform.localScale = Vector3.zero;
 		LeanTween.scale(
 			this.gameObject,
-			Vector3.one,
+			this.type == Type.SELF ? Vector3.one * 3f : Vector3.one * Random.Range(0.7f, 1.3f),
 			0.5f)
 			.setDelay(UnityEngine.Random.Range(0.1f, 0.5f))
 			.setEase(LeanTweenType.easeOutBounce);
@@ -213,7 +173,6 @@ public class FBUser : MonoBehaviour
 
 				WWW www = new WWW(this.picture.data.url);
 				yield return www;
-
 				this.LoadImage(www.texture);
 			}
 		}
