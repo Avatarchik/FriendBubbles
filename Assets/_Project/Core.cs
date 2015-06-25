@@ -65,7 +65,7 @@ public class Core : MonoBehaviour
 					1f)
 					.setEase(LeanTweenType.easeInOutSine);
 
-				this.StartCoroutine(this.CreateBubbleGraph((JObject)resultJToken));
+				BubbleGraph.Create((JObject)resultJToken);
 			}
 			else
 			{
@@ -80,22 +80,5 @@ public class Core : MonoBehaviour
 				1f)
 				.setEase(LeanTweenType.easeInOutSine);
 		}
-	}
-
-	public IEnumerator CreateBubbleGraph(JObject p_userDataJToken)
-	{
-		BubbleGraph bubbleGraph = GameObject.FindObjectOfType<BubbleGraph>();
-		if(bubbleGraph != null)
-			bubbleGraph.SelfDestruct();
-
-		while(bubbleGraph != null)
-		{
-			yield return null;
-			bubbleGraph = GameObject.FindObjectOfType<BubbleGraph>();
-		}
-
-		GameObject newBubbleGraphGameObject = new GameObject();
-		bubbleGraph = newBubbleGraphGameObject.AddComponent<BubbleGraph>();
-		bubbleGraph.Init(p_userDataJToken);
 	}
 }

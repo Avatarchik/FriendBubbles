@@ -58,7 +58,10 @@ public class FBUser : MonoBehaviour
 
 	public Type type;
 
+	private bool dragging = false;
+	private bool clicked = false;
 	// ----------
+
 
 	private void Awake()
 	{
@@ -66,6 +69,51 @@ public class FBUser : MonoBehaviour
 		if(collider2D == null)
 			collider2D = this.gameObject.AddComponent<CircleCollider2D>();
 		collider2D.radius = 0.5f;
+
+		EasyTouch.On_TouchStart += delegate(Gesture gesture) {
+			if(gesture.pickedObject == this.gameObject)
+			{
+				if(this.type == Type.DRAGGER)
+				{
+					dragging = true;
+				}
+				else
+				{
+
+				}
+			}
+		};
+
+		EasyTouch.On_TouchDown += delegate(Gesture gesture) {
+			if(gesture.pickedObject == this.gameObject)
+			{
+				if(this.type == Type.DRAGGER && this.dragging)
+				{
+					Vector3 newPosition = Camera.main.ScreenToWorldPoint(gesture.position);
+					newPosition.z = 0f;
+					this.transform.parent.position = newPosition;
+				}
+				else
+				{
+					
+				}
+			}
+		};
+
+		EasyTouch.On_TouchUp += delegate(Gesture gesture) {
+			if(gesture.pickedObject == this.gameObject)
+			{
+				if(this.type == Type.DRAGGER)
+				{
+					this.dragging = false;
+				}
+				else if(!this.clicked)
+				{
+					this.clicked = true;
+					BubbleGraph.Create(this.jObjectData);
+				}
+			}
+		};
 	}
 
 	private void Update()
@@ -76,6 +124,8 @@ public class FBUser : MonoBehaviour
 	private void LateUpdate()
 	{
 		this.transform.eulerAngles = Vector3.zero;
+		if(this.type == Type.DRAGGER)
+			this.transform.localPosition = Vector3.zero;
 	}
 
 	// Initializes this object with a user's data

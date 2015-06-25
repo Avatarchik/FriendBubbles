@@ -26,6 +26,17 @@ public class BubbleGraph : MonoBehaviour
 		this.gameObject.name = "BubbleGraph";
 	}
 
+	
+	public static BubbleGraph Create(JObject p_userDataJToken)
+	{
+		GameObject newBubbleGraphGameObject = new GameObject();
+		newBubbleGraphGameObject.transform.position = Vector3.zero;
+		BubbleGraph bubbleGraph = newBubbleGraphGameObject.AddComponent<BubbleGraph>();
+		bubbleGraph.Init(p_userDataJToken);
+
+		return bubbleGraph;
+	}
+
 	public void Init(JObject p_userDataJToken)
 	{
 		Dictionary<string, string> fbFormData = new Dictionary<string, string>();
