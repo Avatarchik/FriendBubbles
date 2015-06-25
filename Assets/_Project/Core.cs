@@ -25,7 +25,7 @@ public class Core : MonoBehaviour
 		this.fbLoginButton.gameObject.SetActive(false);
 
 		this.SetSpriteAlpha(this.goodFacebookLogo, 0f);
-		this.SetSpriteAlpha(this.badFacebookLogo, 0f);
+//		this.SetSpriteAlpha(this.badFacebookLogo, 0f);
 	}
 
 	public void Start()
@@ -50,7 +50,7 @@ public class Core : MonoBehaviour
 	// Called when logged in to Facebook
 	private void OnFBLoggedIn(FBResult p_result)
 	{
-		Debug.Log(p_result.Text);
+//		Debug.Log(p_result.Text);
 		if(string.IsNullOrEmpty(p_result.Error))
 		{
 			this.fbLoginButton.SetActive(false);
@@ -64,11 +64,11 @@ public class Core : MonoBehaviour
 					1f,
 					1f)
 					.setEase(LeanTweenType.easeInOutSine);
-				LeanTween.alpha(
-					this.badFacebookLogo.gameObject,
-					0f,
-					1f)
-					.setEase(LeanTweenType.easeInOutSine);
+//				LeanTween.alpha(
+//					this.badFacebookLogo.gameObject,
+//					0f,
+//					1f)
+//					.setEase(LeanTweenType.easeInOutSine);
 
 				this.CreateBubbleGraph((JObject)resultJToken);
 			}
@@ -84,11 +84,11 @@ public class Core : MonoBehaviour
 				0f,
 				1f)
 				.setEase(LeanTweenType.easeInOutSine);
-			LeanTween.alpha(
-				this.badFacebookLogo.gameObject,
-				1f,
-				1f)
-				.setEase(LeanTweenType.easeInOutSine);
+//			LeanTween.alpha(
+//				this.badFacebookLogo.gameObject,
+//				1f,
+//				1f)
+//				.setEase(LeanTweenType.easeInOutSine);
 		}
 	}
 

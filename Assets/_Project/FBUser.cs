@@ -60,8 +60,8 @@ public class FBUser : MonoBehaviour
 
 		this.Clear();
 
-		Debug.Log("Initializing " + p_jObject["name"]);
-		Debug.Log(p_jObject.ToString());
+//		Debug.Log("Initializing " + p_jObject["name"]);
+//		Debug.Log(p_jObject.ToString());
 
 		JsonTools.PopulateJObjectToExistingObject(p_jObject, this);
 		this.StartCoroutine(this.ReloadImage());
@@ -75,33 +75,58 @@ public class FBUser : MonoBehaviour
 		this.picture.Clear();
 	}
 
+	private void LoadImage(Texture2D p_texture)
+	{
+		// Create a new sprite
+		Sprite newPictureSprite = Sprite.Create(
+			p_texture,
+			new Rect(0f, 0f, p_texture.width, p_texture.height),
+			Vector2.one * 0.5f,
+			128f);
+		
+		GameObject newPictureGameObject = new GameObject();
+		newPictureGameObject.name = "Photo";
+		SpriteRenderer newPictureSpriteRenderer = newPictureGameObject.AddComponent<SpriteRenderer>();
+		newPictureSpriteRenderer.sprite = newPictureSprite;
+		
+		// Properly parent and store
+		newPictureGameObject.transform.parent = this.transform;
+		newPictureGameObject.transform.localPosition = Vector3.zero;
+		this.picture.gameObject = newPictureGameObject;
+	}
+
+	private void OnFBPictureResult(FBResult p_results)
+	{
+		if(p_results.Texture != null)
+			this.LoadImage(p_results.Texture);
+		else
+			Debug.LogError("Received bad image");
+	}
+	
 	// Reloads an image
 	private IEnumerator ReloadImage()
 	{
 		if(this.picture != null)
 		{
-			// Make sure the image is cleared
-			this.picture.Clear();
+			if(string.IsNullOrEmpty(this.picture.data.url))
+			{
+				// We don't have a URL, use User ID
+				FB.API(
+					"/" + this.id + "/picture",
+					Facebook.HttpMethod.GET,
+					this.OnFBPictureResult);
+			}
+			else
+			{
+				// We have a URL, bypass a Facebook API call and load directly
+				while(string.IsNullOrEmpty(this.picture.data.url))
+					yield return null;
 
-			WWW www = new WWW(this.picture.data.url);
-			yield return www;
+				WWW www = new WWW(this.picture.data.url);
+				yield return www;
 
-			// Create a new sprite
-			Sprite newPictureSprite = Sprite.Create(
-				www.texture,
-				new Rect(0f, 0f, www.texture.width, www.texture.height),
-				Vector2.one * 0.5f,
-				128f);
-
-			GameObject newPictureGameObject = new GameObject();
-			newPictureGameObject.name = "Photo";
-			SpriteRenderer newPictureSpriteRenderer = newPictureGameObject.AddComponent<SpriteRenderer>();
-			newPictureSpriteRenderer.sprite = newPictureSprite;
-
-			// Properly parent and store
-			newPictureGameObject.transform.parent = this.transform;
-			newPictureGameObject.transform.localPosition = Vector3.zero;
-			this.picture.gameObject = newPictureGameObject;
+				this.LoadImage(www.texture);
+			}
 		}
 	}
 

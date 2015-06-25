@@ -71,8 +71,7 @@ public class BubbleGraph : MonoBehaviour
 					GameObject newFBUserGameObject = new GameObject();
 					newFBUserGameObject.transform.parent = this.transform;
 
-					float eulerAngle = ((float)count / (float)this.maxFriends) * 360f;
-					Debug.Log(eulerAngle);
+					float eulerAngle = Mathf.Deg2Rad * (((float)count / (float)this.maxFriends) * 360f);
 					newFBUserGameObject.transform.localPosition = 
 						new Vector3(
 							this.friendsDistance * Mathf.Cos (eulerAngle),
