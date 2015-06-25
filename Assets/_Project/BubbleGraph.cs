@@ -124,9 +124,6 @@ public class BubbleGraph : MonoBehaviour
 		foreach(FBUser fbUser in this.friends)
 			if(fbUser != null)
 				fbUser.SelfDestruct();
-
-		// Clear the list for next use
-		this.friends.Clear();
 	}
 
 	public void SelfDestruct()
@@ -137,12 +134,24 @@ public class BubbleGraph : MonoBehaviour
 
 	private IEnumerator CoSelfDestruct()
 	{
-		FBUser[] fbUsers = GameObject.FindObjectsOfType<FBUser>();
-		while(fbUsers.Length > 0)
+		bool foundActive;
+		do
 		{
+			foundActive = false;
+			foreach(FBUser fbUser in this.friends)
+			{
+				if(fbUser != null)
+					foundActive = true;
+			}
 			yield return null;
-			fbUsers = GameObject.FindObjectsOfType<FBUser>();
-		}
+		}while(foundActive);
+
+//		FBUser[] fbUsers = GameObject.FindObjectsOfType<FBUser>();
+//		while(fbUsers.Length > 0)
+//		{
+//			yield return null;
+//			fbUsers = GameObject.FindObjectsOfType<FBUser>();
+//		}
 
 		GameObject.Destroy(this.gameObject);
 	}

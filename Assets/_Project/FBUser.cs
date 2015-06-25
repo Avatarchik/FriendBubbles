@@ -11,8 +11,6 @@ using System.Runtime.Serialization;
  * @author Yaniv Peer
  */
 [DataContract]
-//[RequireComponent(typeof(SpringJoint2D))]
-//[RequireComponent(typeof(Rigidbody2D))]
 public class FBUser : MonoBehaviour 
 {
 	// Data structure according to Facebook's own JSON data structure
