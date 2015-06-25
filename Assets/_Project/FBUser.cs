@@ -11,6 +11,8 @@ using System.Runtime.Serialization;
  * @author Yaniv Peer
  */
 [DataContract]
+//[RequireComponent(typeof(SpringJoint2D))]
+//[RequireComponent(typeof(Rigidbody2D))]
 public class FBUser : MonoBehaviour 
 {
 	// Data structure according to Facebook's own JSON data structure
@@ -50,6 +52,20 @@ public class FBUser : MonoBehaviour
 	private FBUser.FBPicture picture = new FBPicture();
 
 	// ----------
+
+	private void Awake()
+	{
+		CircleCollider2D collider2D = this.GetComponent<CircleCollider2D>();
+		if(collider2D == null)
+			collider2D = this.gameObject.AddComponent<CircleCollider2D>();
+		collider2D.radius = 0.5f;
+	}
+	
+	
+	private void LateUpdate()
+	{
+		this.transform.eulerAngles = Vector3.zero;
+	}
 
 	// Initializes this object with a user's data
 	public void Init(JObject p_jObject)
@@ -93,6 +109,15 @@ public class FBUser : MonoBehaviour
 		newPictureGameObject.transform.parent = this.transform;
 		newPictureGameObject.transform.localPosition = Vector3.zero;
 		this.picture.gameObject = newPictureGameObject;
+
+		// Bounce in
+		this.transform.localScale = Vector3.zero;
+		LeanTween.scale(
+			this.gameObject,
+			Vector3.one,
+			0.5f)
+			.setDelay(UnityEngine.Random.Range(0.1f, 0.5f))
+			.setEase(LeanTweenType.easeOutBounce);
 	}
 
 	private void OnFBPictureResult(FBResult p_results)
@@ -133,7 +158,14 @@ public class FBUser : MonoBehaviour
 	// Self destruct beautifully
 	public void SelfDestruct()
 	{
-		// TODO Pretty animation
-		GameObject.Destroy(this.gameObject);
+		// Bounce in
+		LeanTween.scale(
+			this.gameObject,
+			Vector3.zero,
+			0.5f)
+			.setEase(LeanTweenType.easeOutBounce)
+			.setOnComplete(delegate() {
+				GameObject.Destroy(this.gameObject);
+			});
 	}
 }

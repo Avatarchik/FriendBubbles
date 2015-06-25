@@ -64,13 +64,8 @@ public class Core : MonoBehaviour
 					1f,
 					1f)
 					.setEase(LeanTweenType.easeInOutSine);
-//				LeanTween.alpha(
-//					this.badFacebookLogo.gameObject,
-//					0f,
-//					1f)
-//					.setEase(LeanTweenType.easeInOutSine);
 
-				this.CreateBubbleGraph((JObject)resultJToken);
+				this.StartCoroutine(this.CreateBubbleGraph((JObject)resultJToken));
 			}
 			else
 			{
@@ -84,29 +79,23 @@ public class Core : MonoBehaviour
 				0f,
 				1f)
 				.setEase(LeanTweenType.easeInOutSine);
-//			LeanTween.alpha(
-//				this.badFacebookLogo.gameObject,
-//				1f,
-//				1f)
-//				.setEase(LeanTweenType.easeInOutSine);
 		}
 	}
 
-	private void CreateBubbleGraph(JObject p_userDataJToken)
+	public IEnumerator CreateBubbleGraph(JObject p_userDataJToken)
 	{
-		GameObject newBubbleGraphGameObject = new GameObject();
-		BubbleGraph bubbleGraph = newBubbleGraphGameObject.AddComponent<BubbleGraph>();
-		bubbleGraph.Init(p_userDataJToken);
+		BubbleGraph bubbleGraph = GameObject.FindObjectOfType<BubbleGraph>();
+		if(bubbleGraph != null)
+			bubbleGraph.SelfDestruct();
 
-//		Dictionary<string, string> fbParams = new Dictionary<string, string>();
-//		fbParams.Add("limit", "20");
-//
-//		FB.API(
-//			"/me/taggable_friends", 
-//			Facebook.HttpMethod.GET,
-//			delegate(FBResult result) {
-//		
-//			},
-//			fbParams);
+		while(bubbleGraph != null)
+		{
+			yield return null;
+			bubbleGraph = GameObject.FindObjectOfType<BubbleGraph>();
+		}
+
+		GameObject newBubbleGraphGameObject = new GameObject();
+		bubbleGraph = newBubbleGraphGameObject.AddComponent<BubbleGraph>();
+		bubbleGraph.Init(p_userDataJToken);
 	}
 }
