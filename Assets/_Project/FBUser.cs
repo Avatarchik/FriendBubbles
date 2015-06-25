@@ -13,6 +13,11 @@ using System.Runtime.Serialization;
 [DataContract]
 public class FBUser : MonoBehaviour 
 {
+	public enum Type {DRAGGER, CLICKER};
+
+
+	// ----------
+
 	// Data structure according to Facebook's own JSON data structure
 	[DataContract]
 	public class FBPicture
@@ -49,6 +54,10 @@ public class FBUser : MonoBehaviour
 	[JsonProperty]
 	private FBUser.FBPicture picture = new FBPicture();
 
+	private JObject jObjectData;
+
+	public Type type;
+
 	// ----------
 
 	private void Awake()
@@ -58,19 +67,26 @@ public class FBUser : MonoBehaviour
 			collider2D = this.gameObject.AddComponent<CircleCollider2D>();
 		collider2D.radius = 0.5f;
 	}
-	
-	
+
+	private void Update()
+	{
+
+	}
+
 	private void LateUpdate()
 	{
 		this.transform.eulerAngles = Vector3.zero;
 	}
 
 	// Initializes this object with a user's data
-	public void Init(JObject p_jObject)
+	public void Init(JObject p_jObject, FBUser.Type p_type)
 	{
 		// Fail safe
 		if(p_jObject == null)
 			return;
+
+		this.jObjectData = p_jObject;
+		this.type = p_type;
 
 		this.Clear();
 

@@ -60,7 +60,7 @@ public class BubbleGraph : MonoBehaviour
 				newFBUserGameObject.transform.parent = this.transform;
 				newFBUserGameObject.transform.localPosition = Vector3.zero;
 				FBUser newFBUser = newFBUserGameObject.AddComponent<FBUser>();
-				newFBUser.Init((JObject)fbResultJToken);
+				newFBUser.Init((JObject)fbResultJToken, FBUser.Type.DRAGGER);
 
 				this.me = newFBUser;
 			}
@@ -80,8 +80,6 @@ public class BubbleGraph : MonoBehaviour
 				{
 					// Create a new FBUser object inside a new GameObject
 					GameObject newFBUserGameObject = new GameObject();
-//					newFBUserGameObject.transform.parent = this.transform;
-
 					float eulerAngle = Mathf.Deg2Rad * (((float)count / (float)this.maxFriends) * 360f);
 					newFBUserGameObject.transform.localPosition = 
 						new Vector3(
@@ -101,7 +99,7 @@ public class BubbleGraph : MonoBehaviour
 					rigidBody2D.drag = 10f;
 
 					FBUser newFBUser = newFBUserGameObject.AddComponent<FBUser>();
-					newFBUser.Init((JObject)userJToken);
+					newFBUser.Init((JObject)userJToken, FBUser.Type.CLICKER);
 
 					this.friends.Add(newFBUser);
 
