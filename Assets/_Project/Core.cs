@@ -51,7 +51,7 @@ public class Core : MonoBehaviour
 	private void OnFBLoggedIn(FBResult p_result)
 	{
 //		Debug.Log(p_result.Text);
-		if(string.IsNullOrEmpty(p_result.Error))
+		if(string.IsNullOrEmpty(p_result.Error) && FB.IsLoggedIn)
 		{
 			this.fbLoginButton.SetActive(false);
 
@@ -76,9 +76,10 @@ public class Core : MonoBehaviour
 		{
 			LeanTween.alpha(
 				this.goodFacebookLogo.gameObject,
-				0f,
-				1f)
-				.setEase(LeanTweenType.easeInOutSine);
+				1f,
+				0.2f)
+				.setEase(LeanTweenType.easeInOutSine)
+				.setLoopPingPong(1);
 		}
 	}
 }
