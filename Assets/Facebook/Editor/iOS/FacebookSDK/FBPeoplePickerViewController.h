@@ -74,13 +74,6 @@ typedef NS_ENUM(NSUInteger, FBFriendDisplayOrdering) {
 
 /*!
  @abstract
- The list of people that are currently selected in the veiw.
- The items in the array are <FBGraphPerson> objects.
- */
-@property (nonatomic, copy, readonly) NSArray *selection;
-
-/*!
- @abstract
  The order in which people are sorted in the display.
  */
 @property (nonatomic) FBFriendSortOrdering sortOrdering;

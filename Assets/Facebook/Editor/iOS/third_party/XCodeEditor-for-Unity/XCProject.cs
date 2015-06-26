@@ -76,10 +76,8 @@ namespace UnityEditor.XCodeEditor
 				this.filePath = projects[ 0 ];
 			}
 
-            projectFileInfo = new FileInfo( Path.Combine( this.filePath, "project.pbxproj" ) );
-            StreamReader sr = projectFileInfo.OpenText();
-            string contents = sr.ReadToEnd();
-            sr.Close();
+			projectFileInfo = new FileInfo( Path.Combine( this.filePath, "project.pbxproj" ) );
+			string contents = projectFileInfo.OpenText().ReadToEnd();
 
 			PBXParser parser = new PBXParser();
 			_datastore = parser.Decode( contents );

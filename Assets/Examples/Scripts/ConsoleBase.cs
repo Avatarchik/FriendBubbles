@@ -13,15 +13,15 @@ public class ConsoleBase : MonoBehaviour
     protected Texture2D lastResponseTexture;
 
     protected Vector2 scrollPosition = Vector2.zero;
-    #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8
+#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8
     protected int buttonHeight = 60;
     protected int mainWindowWidth = Screen.width - 30;
     protected int mainWindowFullWidth = Screen.width;
-    #else
+#else
     protected int buttonHeight = 24;
     protected int mainWindowWidth = 500;
     protected int mainWindowFullWidth = 530;
-    #endif
+#endif
 
     virtual protected void Awake()
     {
@@ -45,7 +45,7 @@ public class ConsoleBase : MonoBehaviour
     {
         GUILayout.BeginHorizontal();
         GUILayout.Label(label, GUILayout.MaxWidth(150));
-        text = GUILayout.TextField(text, GUILayout.MaxWidth(mainWindowWidth - 150));
+        text = GUILayout.TextField(text);
         GUILayout.EndHorizontal();
     }
 
@@ -75,11 +75,11 @@ public class ConsoleBase : MonoBehaviour
     {
         lastResponseTexture = null;
         // Some platforms return the empty string instead of null.
-        if (!String.IsNullOrEmpty(result.Error))
+        if (!String.IsNullOrEmpty (result.Error))
         {
             lastResponse = "Error Response:\n" + result.Error;
         }
-        else if (!String.IsNullOrEmpty(result.Text))
+        else if (!String.IsNullOrEmpty (result.Text))
         {
             lastResponse = "Success Response:\n" + result.Text;
         }
@@ -176,7 +176,7 @@ public class ConsoleBase : MonoBehaviour
             status = "Login (for publish_actions) called";
         }
 
-        #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_EDITOR
+        #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8
         if (Button("Logout"))
         {
             CallFBLogout();

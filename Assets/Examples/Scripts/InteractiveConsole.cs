@@ -184,17 +184,67 @@ public sealed class InteractiveConsole : ConsoleBase
         FB.AppEvents.LogEvent(
             Facebook.FBAppEventName.UnlockedAchievement,
             null,
-            new Dictionary<string,object>() 
-            {
+            new Dictionary<string,object>() {
                 { Facebook.FBAppEventParameterName.Description, "Clicked 'Log AppEvent' button" }
             }
         );
         Callback(new FBResult(
-            "You may see results showing up at https://www.facebook.com/insights/" +
-            FB.AppId +
-            "?section=AppEvents"
-        )
+                "You may see results showing up at https://www.facebook.com/insights/" +
+                FB.AppId +
+                "?section=AppEvents"
+            )
         );
+    }
+
+    #endregion
+
+    #region FB.Canvas.SetResolution example
+
+    public string Width = "800";
+    public string Height = "600";
+    public bool CenterHorizontal = true;
+    public bool CenterVertical = false;
+    public string Top = "10";
+    public string Left = "10";
+
+    public void CallCanvasSetResolution()
+    {
+        int width;
+        if (!Int32.TryParse(Width, out width))
+        {
+            width = 800;
+        }
+        int height;
+        if (!Int32.TryParse(Height, out height))
+        {
+            height = 600;
+        }
+        float top;
+        if (!float.TryParse(Top, out top))
+        {
+            top = 0.0f;
+        }
+        float left;
+        if (!float.TryParse(Left, out left))
+        {
+            left = 0.0f;
+        }
+        if (CenterHorizontal && CenterVertical)
+        {
+            FB.Canvas.SetResolution(width, height, false, 0, FBScreen.CenterVertical(), FBScreen.CenterHorizontal());
+        }
+        else if (CenterHorizontal)
+        {
+            FB.Canvas.SetResolution(width, height, false, 0, FBScreen.Top(top), FBScreen.CenterHorizontal());
+        }
+        else if (CenterVertical)
+        {
+            FB.Canvas.SetResolution(width, height, false, 0, FBScreen.CenterVertical(), FBScreen.Left(left));
+        }
+        else
+        {
+            FB.Canvas.SetResolution(width, height, false, 0, FBScreen.Top(top), FBScreen.Left(left));
+        }
     }
 
     #endregion
@@ -209,19 +259,17 @@ public sealed class InteractiveConsole : ConsoleBase
         FeedProperties.Add("key2", new[] { "valueString2", "http://www.facebook.com" });
     }
 
-    private void FriendFilterArea()
-    {
-        #if UNITY_WEBPLAYER
-                GUILayout.BeginHorizontal();
-        #endif
+    private void FriendFilterArea() {
+#if UNITY_WEBPLAYER
+        GUILayout.BeginHorizontal();
+#endif
         GUILayout.Label("Filters:");
-        FriendFilterSelection = GUILayout.SelectionGrid(
-            FriendFilterSelection,
-            FriendFilterTypes, 
-            3, 
-            GUILayout.MinHeight(buttonHeight)
-        );
-        #if UNITY_WEBPLAYER
+        FriendFilterSelection =
+            GUILayout.SelectionGrid(FriendFilterSelection,
+                                    FriendFilterTypes,
+                                    3,
+                                    GUILayout.MinHeight(buttonHeight));
+#if UNITY_WEBPLAYER
         GUILayout.EndHorizontal();
 
         // Filter groups are not supported on mobile so no need to display
@@ -261,14 +309,14 @@ public sealed class InteractiveConsole : ConsoleBase
             FriendFilterGroupIDs.Add("");
             NumFriendFilterGroups++;
         }
-        #endif
+#endif
     }
 
     void OnGUI()
     {
         AddCommonHeader ();
 
-        if (Button("Publish Install")) 
+        if (Button("Publish Install"))
         {
             CallFBActivateApp();
             status = "Install Published";
@@ -339,14 +387,14 @@ public sealed class InteractiveConsole : ConsoleBase
         }
         GUILayout.Space(10);
 
-        #if UNITY_WEBPLAYER
+#if UNITY_WEBPLAYER
         LabelAndTextField("Product: ", ref PayProduct);
         if (Button("Call Pay"))
         {
             CallFBPay();
         }
         GUILayout.Space(10);
-        #endif
+#endif
 
         LabelAndTextField("API: ", ref ApiQuery);
         if (Button("Call API"))
@@ -355,10 +403,10 @@ public sealed class InteractiveConsole : ConsoleBase
             CallFBAPI();
         }
         GUILayout.Space(10);
-
-       if (Button("Take & upload screenshot")) 
+        if (Button("Take & upload screenshot"))
         {
             status = "Take screenshot";
+
             StartCoroutine(TakeScreenshot());
         }
 
@@ -366,13 +414,36 @@ public sealed class InteractiveConsole : ConsoleBase
         {
             CallFBGetDeepLink();
         }
-            
+
         GUI.enabled = true;
-        if (Button("Log FB App Event")) 
+        if (Button("Log FB App Event"))
         {
             status = "Logged FB.AppEvent";
             CallAppEventLogEvent();
         }
+
+#if UNITY_WEBPLAYER
+        GUI.enabled = FB.IsInitialized;
+        GUILayout.Space(10);
+
+        LabelAndTextField("Game Width: ", ref Width);
+        LabelAndTextField("Game Height: ", ref Height);
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Center Game:", GUILayout.Width(150));
+        CenterVertical = GUILayout.Toggle(CenterVertical, "Vertically");
+        CenterHorizontal = GUILayout.Toggle(CenterHorizontal, "Horizontally");
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        LabelAndTextField("or set Padding Top: ", ref Top);
+        LabelAndTextField("set Padding Left: ", ref Left);
+        GUILayout.EndHorizontal();
+        if (Button("Set Resolution"))
+        {
+            status = "Set to new Resolution";
+            CallCanvasSetResolution();
+        }
+        GUI.enabled = true;
+#endif
 
         GUILayout.Space(10);
 

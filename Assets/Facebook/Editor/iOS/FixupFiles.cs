@@ -83,7 +83,7 @@ namespace UnityEditor.FacebookEditor
             }
             catch (System.Exception e)
             {
-                FBDebug.Error("Error parsing Unity version number: " + e);
+                FbDebug.Error("Error parsing Unity version number: " + e);
             }
 
             return ((majorVersion * 100) + (minorVersion * 10));

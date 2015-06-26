@@ -35,7 +35,7 @@ extern "C" void iosGetDeepLink();
   if(_instance != nil) {
     return _instance;
   }
-  
+
   self = [super init];
   if(!self)
     return nil;
@@ -415,7 +415,7 @@ void iosLogout() {
   [[FbUnityInterface sharedInstance] logout];
 }
 
-void iosSetShareDialogMode(NativeDialogModes::DialogMode mode) {
+void iosSetShareDialogMode(NativeDialogModes::eModes mode) {
   [[FbUnityInterface sharedInstance] setDialogMode:mode];
 }
 
@@ -730,5 +730,5 @@ void iosFBAppEventsSetLimitEventUsage(BOOL limitEventUsage) {
   }
 
   @end
-  
+
 #endif

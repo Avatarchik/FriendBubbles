@@ -23,7 +23,7 @@
 @property (nonatomic) BOOL isInitializing;
 @property (strong, nonatomic) FBFrictionlessRecipientCache *friendCache;
 @property (assign, nonatomic) BOOL useFrictionlessRequests;
-@property (nonatomic) NativeDialogModes::DialogMode dialogMode;
+@property (nonatomic) NativeDialogModes::eModes dialogMode;
 @property (nonatomic, strong) NSString *launchURL;
 
 +(FbUnityInterface *)sharedInstance;
